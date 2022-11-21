@@ -1,4 +1,14 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# EmpireMedia
+
+Application that presents Bitcoin's real-time price and additional data for traders.
+
+**Link to project:** https://empire-media-galkinallan.vercel.app/overview
+
+![alt tag](./app.png)
+
+## How It's Made:
+
+**Tech used:** HTML, CSS, JavaScript, React, Next,js, Redux
 
 ## Getting Started
 
