@@ -35,11 +35,11 @@ export default function Header() {
   }, []);
 
   return (
-    <div className="header  flex justify-between some:bg-black p-5 shadow-lg2 ">
+    <div className="header flex flex-col justify-between  items-center some:bg-black p-5 shadow-lg2 sm:flex-row  ">
       <div className="left">
-        <div className="logo flex">
+        <div className="logo flex justify-center sm:justify-start">
           <Image src={btcImage} alt="btc" width={30} height={20} />
-          <h2 className=" text-3xl ml-2 font-bold">Bitcoin</h2>
+          <h2 className=" text-3xl ml-2  font-bold">Bitcoin</h2>
         </div>
         <span className=" text-gray-400">As of: {date}</span>
       </div>
