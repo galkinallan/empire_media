@@ -10,7 +10,7 @@ import {
 
 export default function Chart({ ...props }) {
   return (
-    <ResponsiveContainer width="99%" aspect={2}>
+    <ResponsiveContainer width="99%" aspect={3}>
       <AreaChart data={props.changes.data}>
         <XAxis dataKey="Date" />
         <YAxis domain={["auto", "auto"]} orientation="right" />
