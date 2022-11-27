@@ -2,7 +2,7 @@
 
 Application that presents Bitcoin's real-time price and additional data for traders.
 
-**Link to project:** https://empire-media-galkinallan.vercel.app/overview
+**Link to project:** https://empire-media-galkinallan.vercel.app
 
 ![alt tag](./app.png)
 
