@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import tw from "tailwind-styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { getRecentChanges } from "../redux/slices/timeStamp";
+import { oneMin, oneHour, fiveMin, oneWeek } from "../constants/timeStamps";
 
 const TabContainer = tw.div`tab-container mt-5`;
 
@@ -12,23 +13,6 @@ const Tabs = tw.div`flex`;
 const TimeStamps = tw.div`border-t-2 pt-9 pb-9`;
 
 export default function Tab() {
-  const oneMin = {
-    link: "histominute?aggregate=1&e=CCCAGG&fsym=BTC&tsym=usd&limit=30",
-    value: "1min",
-  };
-  const fiveMin = {
-    link: "histominute?aggregate=5&e=CCCAGG&fsym=BTC&tsym=usd&limit=30",
-    value: "5min",
-  };
-  const oneHour = {
-    link: "histohour?aggregate=1&e=CCCAGG&fsym=BTC&tsym=usd&limit=30",
-    value: "1hour",
-  };
-  const oneWeek = {
-    link: "histoday?aggregate=7&e=CCCAGG&fsym=BTC&tsym=usd&limit=30",
-    value: "1week",
-  };
-
   const router = useRouter();
   const timeStamp = useSelector((state) => state.timeStampSlice);
 
