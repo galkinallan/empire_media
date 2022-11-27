@@ -1,5 +1,16 @@
-import styles from "../styles/Home.module.css";
+import dynamic from "next/dynamic";
+import { useSelector } from "react-redux";
 
 export default function Home() {
-  return <div className={styles.container}></div>;
+  const timeStamps = useSelector((state) => state.timeStampSlice);
+
+  const MyChart = dynamic(() => import("../components/Chart"), {
+    ssr: false,
+  });
+
+  return (
+    <div>
+      <MyChart changes={timeStamps} />
+    </div>
+  );
 }

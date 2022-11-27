@@ -1,12 +1,26 @@
 import moment from "moment-timezone";
 import { useState } from "react";
+import tw from "tailwind-styled-components";
 
-export default function Table({ ...props }) {
-  const [table, setTable] = useState(props.changes?.data?.slice());
+const HistoryTable = tw.table`w-full border-2 sticky`;
+
+const Thead = tw.thead`bg-gray-50 border-b-2 border-gray200 sm:sticky sm:top-0`;
+
+const Th = tw.th`p-3 txt-sm font-bold tracking-wide text-left `;
+
+const Buttons = tw.div`flex flex-col ml-1  justify-center`;
+
+export default function Table({ changes }) {
+  const [table, setTable] = useState(changes?.data?.slice());
   const [sortBy, setSortBy] = useState({
     name: "Date",
     type: "DESC",
   });
+  const [visible, setVisible] = useState(5);
+
+  function showMore() {
+    setVisible((prevValue) => prevValue + 5);
+  }
 
   function sort(value) {
     if (sortBy.type === "ASC") {
@@ -20,133 +34,42 @@ export default function Table({ ...props }) {
     }
   }
 
+  const columns = ["Date", "High", "Low", "Open", "Close"];
+
   return (
-    <div className=" tableContainer ">
-      <table className=" w-full border-2">
-        <thead className=" bg-gray-50 border-b-2 border-gray200">
+    <div className=" w-full overflow-x-auto sm:overflow-x-visible">
+      <HistoryTable>
+        <Thead>
           <tr>
-            <th className=" p-3 txt-sm font-bold tracking-wide text-left ">
-              <div className=" flex">
-                Date
-                <div className=" flex flex-col ml-1  justify-center">
-                  <button
-                    onClick={() => sort("Date")}
-                    className={
-                      sortBy.type === "ASC" && sortBy.name === "Date"
-                        ? " up-dark"
-                        : " up-light"
-                    }
-                  ></button>
-                  <button
-                    onClick={() => sort("Date")}
-                    className={
-                      sortBy.type === "DESC" && sortBy.name === "Date"
-                        ? " down-dark"
-                        : " down-light"
-                    }
-                  ></button>
+            {columns.map((column) => (
+              <Th key={column}>
+                <div className=" flex">
+                  {column}
+                  <Buttons>
+                    <button
+                      onClick={() => sort(column)}
+                      className={
+                        sortBy.type === "ASC" && sortBy.name === column
+                          ? " up-dark"
+                          : " up-light"
+                      }
+                    ></button>
+                    <button
+                      onClick={() => sort(column)}
+                      className={
+                        sortBy.type === "DESC" && sortBy.name === column
+                          ? " down-dark"
+                          : " down-light"
+                      }
+                    ></button>
+                  </Buttons>
                 </div>
-              </div>
-            </th>
-            <th className=" p-3 txt-sm font-bold tracking-wide text-left">
-              <div className="flex">
-                High
-                <div className=" flex flex-col ml-1  justify-center">
-                  <button
-                    onClick={() => sort("High")}
-                    className={
-                      sortBy.type === "ASC" && sortBy.name === "High"
-                        ? " up-dark"
-                        : " up-light"
-                    }
-                  ></button>
-                  <button
-                    onClick={() => sort("High")}
-                    className={
-                      sortBy.type === "DESC" && sortBy.name === "High"
-                        ? " down-dark"
-                        : " down-light"
-                    }
-                  ></button>
-                </div>
-              </div>
-            </th>
-            <th className=" p-3 txt-sm font-bold tracking-wide text-left">
-              <div className="flex">
-                Low
-                <div className=" flex flex-col ml-1  justify-center">
-                  <button
-                    onClick={() => sort("Low")}
-                    className={
-                      sortBy.type === "ASC" && sortBy.name === "Low"
-                        ? " up-dark"
-                        : " up-light"
-                    }
-                  ></button>
-                  <button
-                    onClick={() => sort("Low")}
-                    className={
-                      sortBy.type === "DESC" && sortBy.name === "Low"
-                        ? " down-dark"
-                        : " down-light"
-                    }
-                  ></button>
-                </div>
-              </div>
-            </th>
-            <th className=" p-3 txt-sm font-bold tracking-wide text-left">
-              <div className="flex">
-                Open
-                <div className=" flex flex-col ml-1  justify-center">
-                  <button
-                    onClick={() => sort("Open")}
-                    className={
-                      sortBy.type === "ASC" && sortBy.name === "Open"
-                        ? " up-dark"
-                        : " up-light"
-                    }
-                  ></button>
-                  <button
-                    onClick={() => sort("Open")}
-                    className={
-                      sortBy.type === "DESC" && sortBy.name === "Open"
-                        ? " down-dark"
-                        : " down-light"
-                    }
-                  ></button>
-                </div>
-              </div>
-            </th>
-            <th
-              onClick={() => sort("Close")}
-              className=" p-3 txt-sm font-bold tracking-wide text-left "
-            >
-              <div className="flex">
-                Close
-                <div className=" flex flex-col ml-1  justify-center">
-                  <button
-                    onClick={() => sort("Close")}
-                    className={
-                      sortBy.type === "ASC" && sortBy.name === "Close"
-                        ? " up-dark"
-                        : " up-light"
-                    }
-                  ></button>
-                  <button
-                    onClick={() => sort("Close")}
-                    className={
-                      sortBy.type === "DESC" && sortBy.name === "Close"
-                        ? " down-dark"
-                        : " down-light"
-                    }
-                  ></button>
-                </div>
-              </div>
-            </th>
+              </Th>
+            ))}
           </tr>
-        </thead>
+        </Thead>
         <tbody>
-          {table?.map((data, index) => (
+          {table?.slice(0, visible).map((data, index) => (
             <tr key={index}>
               <td className=" p-3 text-gray-700 border-b-2 ">
                 {moment(data.Date).tz("UTC").format("MMM Do, YYYY hh:mm ")}
@@ -166,7 +89,17 @@ export default function Table({ ...props }) {
             </tr>
           ))}
         </tbody>
-      </table>
+      </HistoryTable>
+      <div className=" flex flex-col  pt-8 justify-center">
+        <button
+          className=" content-between bg-transparent hover:bg-green-800 
+             text-green-800 font-semibold hover:text-white py-2 px-4 border
+             border-green-800 hover:border-transparent rounded "
+          onClick={showMore}
+        >
+          Load More
+        </button>
+      </div>
     </div>
   );
 }

@@ -1,19 +1,17 @@
 import "../styles/globals.css";
 import Layout from "../components/Layout";
-
 import { Provider } from "react-redux";
-import { configureStore } from "@reduxjs/toolkit";
-
-import reducers from "../reducers";
-
-const store = configureStore({ reducer: reducers });
+import { StateContext } from "../context/StateContext";
+import { store } from "../redux/store";
 
 function MyApp({ Component, pageProps }) {
   return (
     <Provider store={store}>
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
+      <StateContext>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </StateContext>
     </Provider>
   );
 }

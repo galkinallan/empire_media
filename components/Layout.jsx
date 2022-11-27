@@ -8,10 +8,8 @@ export default function Layout({ children }) {
       <Head>
         <title>EmptireMedia</title>
       </Head>
-
       <Header />
       <Tab />
-
       <main className="main-container">{children}</main>
     </div>
   );

@@ -1,80 +1,70 @@
-import { useState, useEffect } from "react";
 import Image from "next/image";
-import moment from "moment-timezone";
 import btcImage from "../public/images/btc.png";
+import tw from "tailwind-styled-components";
+import { useSelector } from "react-redux";
+
+const HeaderContainer = tw.div`
+  header 
+  flex flex-col justify-between items-center 
+  some:bg-black p-5 shadow-lg2 
+  sm:flex-row `;
+
+const HeaderLogo = tw.div`
+logo 
+flex justify-center 
+sm:justify-start`;
+
+const UpArrow = tw.div`up-green`;
+
+const DownArrow = tw.div`down-red`;
+
+const CurrentRate = tw.div`top flex  items-center`;
+
+const RateChange = tw.div`underLast flex justify-between`;
 
 export default function Header() {
-  const [socketData, setSocketData] = useState(null);
-  const [date, setDate] = useState("");
-  const [positiveChange, setPositiveChange] = useState(true);
-
-  useEffect(() => {
-    let socket = new WebSocket("wss://wstest.fxempire.com?token=btctothemoon");
-    socket.onopen = () => {
-      socket.send(
-        JSON.stringify({
-          type: "SUBSCRIBE",
-          instruments: ["cc-btc-usd-cccagg"],
-        })
-      );
-    };
-    socket.onmessage = (msg) => {
-      const dataJson = JSON.parse(msg.data);
-      const data = dataJson["cc-btc-usd-cccagg"];
-      const date = moment(data.lastUpdate)
-        .tz("UTC")
-        .format("MMM Do, YYYY hh:mm z");
-      setSocketData(data);
-      setDate(date);
-      if (data.change < 0) {
-        setPositiveChange(false);
-      }
-    };
-
-    return () => socket.close();
-  }, []);
+  const socketData = useSelector((state) => state.socketDataSlice);
 
   return (
-    <div className="header flex flex-col justify-between  items-center some:bg-black p-5 shadow-lg2 sm:flex-row  ">
-      <div className="left">
-        <div className="logo flex justify-center sm:justify-start">
-          <Image src={btcImage} alt="btc" width={30} height={20} />
-          <h2 className=" text-3xl ml-2  font-bold">Bitcoin</h2>
-        </div>
-        <span className=" text-gray-400">As of: {date}</span>
-      </div>
-      <div className="right">
-        <div className="top flex  items-center">
-          {socketData?.change > 0 ? (
-            <span className=" text-green-500 text-center text-3xl">
-              &#9650;
-            </span>
-          ) : (
-            <span className=" text-red-500 text-center text-2xl">&#9660;</span>
-          )}
-          <h2 className="text-4xl font-bold ml-3">
-            ${" "}
-            {socketData?.last.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-          </h2>
-        </div>
+    <HeaderContainer>
+      <section className="header-left">
+        <HeaderLogo>
+          <Image src={btcImage} alt="btc" width={30} />
+          <h2 className="text-3xl ml-2 font-bold">Bitcoin</h2>
+        </HeaderLogo>
 
-        <div className="underLast flex justify-between">
+        <span className=" text-gray-400">As of: {socketData?.date}</span>
+      </section>
+
+      <section className="header-right">
+        <CurrentRate>
+          {socketData.isPositive ? <UpArrow /> : <DownArrow />}
+          <h2 className="text-4xl font-bold ml-3">
+            {socketData?.value?.last
+              ?.toString()
+              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+          </h2>
+        </CurrentRate>
+
+        <RateChange>
           <h2
             className={` text-xl ${
-              positiveChange ? "text-green-500 ml-1" : "text-red-500 "
+              socketData.isPositive ? "text-green-500 ml-1" : "text-red-500 "
             }`}
           >
-            {socketData?.change.toFixed(2)}
+            {socketData?.value?.change?.toFixed(2)}
           </h2>
           <h2
             className={` text-xl ${
-              positiveChange ? "text-green-500 ml-1" : "text-red-500 ml-10"
+              socketData.isPositive
+                ? "text-green-500 ml-1"
+                : "text-red-500 ml-10"
             }`}
           >
-            ({socketData?.percentChange.toFixed(2)}%)
+            ({socketData?.value?.percentChange?.toFixed(2)}%)
           </h2>
-        </div>
-      </div>
-    </div>
+        </RateChange>
+      </section>
+    </HeaderContainer>
   );
 }
